@@ -1,0 +1,32 @@
+version: '3'
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  db_data:
+    driver: local
+
+services:
+  app:
+    build:
+      context: .
+    container_name: kameleoonTrialTask
+    networks:
+      - app-network
+    depends_on:
+      - db
+    ports:
+      - '8080:8080'
+  db:
+    image: oscarfonts/h2:latest
+    container_name: h2
+    networks:
+      - app-network
+    environment:
+      - H2_USER=sa
+      - H2_PASSWORD=1234
+      - H2_DB=testdb
+    volumes:
+      - ./src/main/resources/db-init:/docker-entrypoint-initdb.d
